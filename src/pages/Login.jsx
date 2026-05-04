@@ -78,11 +78,6 @@ const Login = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-100">
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md text-sm text-blue-900">
-            <p className="font-bold text-base mb-1">Demo Credentials</p>
-            <p className="font-medium">Email: <span className="font-bold">demo@realtyconnect.in</span></p>
-            <p className="font-medium">Password: <span className="font-bold">demo123</span></p>
-          </div>
           <form className="space-y-6" onSubmit={handleLogin}>
             {error ? (
               <div className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
