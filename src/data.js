@@ -1,0 +1,123 @@
+// Mock Data for RealtyConnect Prototype
+
+export const DEMO_USER = {
+  name: "Rahul Sharma",
+  email: "rahul@demo.com",
+  password: "Demo@1234",
+  kyc_status: "VERIFIED",
+  investor_type: "Resident Indian",
+  total_invested: 3000000,
+  investments: [
+    { propertyId: 1, units: 20, face_value: 100000, total: 2000000 },
+    { propertyId: 2, units: 10, face_value: 100000, total: 1000000 }
+  ],
+  total_income_earned: 184000,
+  next_distribution_date: "15 April 2025",
+  next_distribution_amount: 21900
+};
+
+export const PROPERTIES = [
+  {
+    id: 1,
+    slug: "persistent-systems-it-park-pune",
+    name: "Persistent Systems IT Park, Pune",
+    city: "Pune, Maharashtra",
+    type: "IT Park",
+    tenant: "Persistent Systems Ltd",
+    rating: "AAA",
+    listed: "BSE/NSE",
+    monthly_rent: 800000,
+    annual_rent: 9600000,
+    total_value: 120000000,
+    total_units: 1200,
+    face_value_per_unit: 100000,
+    min_investment: 1000000,
+    gross_yield: 9.2,
+    net_yield: 7.8,
+    lease_end: "March 2029",
+    lock_in: "5 years",
+    escalation: "5%/yr",
+    funded_percent: 73,
+    status: "OPEN",
+    building_health_score: 91
+  },
+  {
+    id: 2,
+    slug: "amazon-fulfillment-warehouse-nagpur",
+    name: "Amazon Fulfillment Warehouse, Nagpur",
+    city: "Nagpur, Maharashtra",
+    type: "Warehouse",
+    tenant: "Amazon Seller Services Pvt Ltd",
+    rating: "AAA",
+    listed: false,
+    monthly_rent: 736667,
+    annual_rent: 8840000,
+    total_value: 85000000,
+    total_units: 850,
+    face_value_per_unit: 100000,
+    min_investment: 1000000,
+    gross_yield: 10.4,
+    net_yield: 8.9,
+    lease_end: "June 2031",
+    lock_in: "7 years",
+    escalation: "4.5%/yr",
+    funded_percent: 91,
+    status: "OPEN",
+    building_health_score: 97
+  },
+  {
+    id: 3,
+    slug: "hdfc-bank-branch-complex-surat",
+    name: "HDFC Bank Branch Complex, Surat",
+    city: "Surat, Gujarat",
+    type: "Retail Banking",
+    tenant: "HDFC Bank Ltd",
+    rating: "AAA",
+    listed: "BSE/NSE",
+    monthly_rent: 440000,
+    annual_rent: 5280000,
+    total_value: 60000000,
+    total_units: 600,
+    face_value_per_unit: 100000,
+    min_investment: 1000000,
+    gross_yield: 8.8,
+    net_yield: 7.4,
+    lease_end: "September 2028",
+    lock_in: "3 years",
+    escalation: "5%/yr",
+    funded_percent: 100,
+    status: "FUNDED",
+    building_health_score: 94
+  },
+  {
+    id: 4,
+    slug: "dmart-retail-plaza-coimbatore",
+    name: "D-Mart Retail Plaza, Coimbatore",
+    city: "Coimbatore, Tamil Nadu",
+    type: "Retail",
+    tenant: "Avenue Supermarts Ltd (D-Mart)",
+    rating: "AA",
+    listed: "BSE/NSE",
+    monthly_rent: 840000,
+    annual_rent: 10080000,
+    total_value: 90000000,
+    total_units: 900,
+    face_value_per_unit: 100000,
+    min_investment: 1000000,
+    gross_yield: 11.2,
+    net_yield: 9.6,
+    lease_end: "December 2036",
+    lock_in: "9 years",
+    escalation: "5%/yr",
+    funded_percent: 0,
+    status: "COMING SOON",
+    building_health_score: 99
+  }
+];
+
+export const INCOME_HISTORY = [
+  { date: "15 Jan 2025", propertyId: 1, units: 20, gross: 14444, tds: 1444, net: 13000, status: "Paid ✓" },
+  { date: "15 Jan 2025", propertyId: 2, units: 10, gross: 9889, tds: 989, net: 8900, status: "Paid ✓" },
+  { date: "15 Oct 2024", propertyId: 1, units: 20, gross: 14444, tds: 1444, net: 13000, status: "Paid ✓" },
+  { date: "15 Oct 2024", propertyId: 2, units: 10, gross: 9889, tds: 989, net: 8900, status: "Paid ✓" }
+];
