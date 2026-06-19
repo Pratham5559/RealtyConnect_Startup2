@@ -1,20 +1,18 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @layer base {
-  :root {
-    --color-navy: #1B3A6B;
-    --color-blue: #2563EB;
-    --color-green: #15803D;
-    --color-amber: #92400E;
-  }
-  
+  * { box-sizing: border-box; }
   body {
-    font-family: 'DM Sans', sans-serif;
-    background-color: #f8fafc;
-    color: #1e293b;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #f8faf9;
+    color: #1a1a1a;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Serif Display', serif;
-  }
+}
+
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }

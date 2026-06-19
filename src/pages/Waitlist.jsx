@@ -1,315 +1,311 @@
-import { useState } from 'react';
-import { ShieldCheck, ChevronRight, ChevronDown, Gamepad2, Lock, CheckCircle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ShieldCheck, TrendingUp, Building2, ArrowRight, Check, Lock, Users, IndianRupee } from 'lucide-react'
 
-const FAQItem = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden mb-3">
-      <button 
-        className="w-full flex justify-between items-center text-left p-5 focus:outline-none hover:bg-gray-50 transition-colors"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className="font-semibold text-gray-800 text-sm md:text-base">{question}</span>
-        {isOpen ? <ChevronDown className="w-5 h-5 text-gray-400" /> : <ChevronRight className="w-5 h-5 text-gray-400" />}
-      </button>
-      {isOpen && <div className="px-5 pb-5 pt-1 text-gray-600 text-sm leading-relaxed border-t border-gray-50">{answer}</div>}
-    </div>
-  );
-};
+const stats = [
+  { value: '₹5.4T', label: 'Indian CRE market' },
+  { value: '8–11%', label: 'Commercial yield' },
+  { value: '7.0%', label: 'FD rate today' },
+  { value: '₹10L', label: 'Min investment' },
+]
 
-const Waitlist = () => {
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+const properties = [
+  { name: 'Persistent Systems IT Park', city: 'Pune', yield: '7.8%', tenant: 'AA+', pct: 73 },
+  { name: 'Amazon Fulfillment Warehouse', city: 'Nagpur', yield: '8.9%', tenant: 'AAA', pct: 91 },
+  { name: 'D-Mart Retail Plaza', city: 'Coimbatore', yield: '9.6%', tenant: 'AA+', pct: 0, soon: true },
+]
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const trust = [
+  { icon: ShieldCheck, title: 'SEBI SM-REIT 2024', desc: 'Fully regulated. Your money stays in SEBI-registered escrow — never touches our operations account.' },
+  { icon: Building2, title: 'AAA/AA tenants only', desc: 'TCS, Amazon, HDFC Bank, D-Mart. Lease locked 5–9 years. Rent comes from Fortune 500 subsidiaries.' },
+  { icon: TrendingUp, title: 'Independent valuation', desc: 'CBRE or JLL values each property every 6 months. Your NAV is never self-reported.' },
+  { icon: Lock, title: 'LTCG at 12.5%', desc: 'Units listed on BSE. 1-year holding = LTCG. Dividend income is tax-free in your hands.' },
+]
 
-    if (!email) {
-      return;
-    }
+export default function Waitlist() {
+  const navigate = useNavigate()
+  const [form, setForm] = useState({ name: '', email: '', phone: '', city: '' })
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [lang, setLang] = useState('en')
 
-    setError('');
-    setSubmitting(true);
-
-    try {
-      await addDoc(collection(db, 'waitlist'), {
-        email,
-        createdAt: serverTimestamp(),
-        source: 'landing-page',
-      });
-      setSubmitted(true);
-    } catch (firebaseError) {
-      console.error('Waitlist signup failed:', firebaseError);
-      setError('Could not join the waitlist right now. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (!form.name || !form.email) return
+    setLoading(true)
+    setTimeout(() => { setLoading(false); setSubmitted(true) }, 800)
+  }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Dark Hero Section */}
-      <div className="bg-[var(--color-navy)] text-white pt-12 pb-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          
-          {/* Logo & Header */}
-          <div className="flex flex-col items-center justify-center text-center mb-12">
-            <div className="w-14 h-14 rounded-full bg-white text-[var(--color-navy)] flex items-center justify-center font-bold text-2xl mb-4 font-serif">
-              RC
-            </div>
-            <h2 className="font-serif text-2xl font-bold mb-1">RealtyConnect</h2>
-            <p className="text-blue-200 text-sm">SEBI SM-REIT Fractional Real Estate Platform</p>
+    <div className="min-h-screen bg-white">
+      {/* Nav */}
+      <nav className="border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 bg-white z-50">
+        <div className="flex items-center gap-2 font-semibold text-gray-900">
+          <span className="w-2 h-2 rounded-full bg-teal-400 inline-block"></span>
+          RealtyConnect
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex gap-0.5 bg-gray-100 rounded-lg p-0.5">
+            {['en','hi'].map(l => (
+              <button key={l} onClick={() => setLang(l)}
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${lang===l?'bg-white text-gray-900 shadow-sm':'text-gray-500'}`}>
+                {l==='en'?'EN':'हिं'}
+              </button>
+            ))}
           </div>
+          <span className="hidden sm:flex items-center gap-1 text-xs bg-teal-50 text-teal-700 px-2 py-1 rounded-full font-medium">
+            <ShieldCheck size={11} /> SEBI SM-REIT
+          </span>
+          <button
+            onClick={() => navigate('/app/dashboard')}
+            className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            View prototype →
+          </button>
+        </div>
+      </nav>
 
-          {/* Main Copy */}
-          <div className="text-center mb-10 max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-serif leading-tight">
-              Earn 9–12% annual returns from commercial real estate
+      {/* Hero */}
+      <section className="max-w-5xl mx-auto px-6 pt-20 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left */}
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs bg-teal-50 text-teal-700 px-3 py-1.5 rounded-full font-medium mb-6">
+              <ShieldCheck size={12} />
+              {lang==='en' ? 'India\'s first Tier 2-focused SM-REIT platform' : 'भारत का पहला टियर-2 SM-REIT प्लेटफ़ॉर्म'}
+            </div>
+
+            <h1 className="text-4xl font-semibold text-gray-900 leading-tight mb-4">
+              {lang==='en'
+                ? <>Your FD earns 7%.<br /><span className="text-teal-500">Commercial real estate</span><br />earns 8–11%.</>
+                : <>आपका FD 7% देता है।<br /><span className="text-teal-500">कमर्शियल रियल एस्टेट</span><br />8–11% देता है।</>}
             </h1>
-            <p className="text-base md:text-lg text-white font-semibold max-w-2xl mx-auto leading-relaxed">
-              Pre-leased Grade A properties. Quarterly rental income. SEBI SM-REIT regulated. Minimum investment ₹10 lakh.
+
+            <p className="text-gray-500 text-base leading-relaxed mb-8">
+              {lang==='en'
+                ? 'Invest in pre-leased commercial properties — IT parks, warehouses, bank branches — with AAA/AA tenants like Amazon and HDFC Bank. SEBI SM-REIT regulated. ₹10,00,000 minimum.'
+                : 'Amazon, HDFC Bank जैसे AAA किरायेदारों के साथ IT पार्क, वेयरहाउस में निवेश करें। SEBI SM-REIT नियमित। न्यूनतम ₹10,00,000।'}
             </p>
+
+            <div className="grid grid-cols-2 gap-3 mb-8">
+              {stats.map(s => (
+                <div key={s.value} className="bg-gray-50 rounded-xl p-4">
+                  <p className="text-xl font-semibold text-gray-900">{s.value}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{s.label}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-2">
+              {['SEBI-registered escrow — your money never touches us', 'Quarterly distributions, 90%+ of rent passed through', 'BSE-listed units — exit anytime on secondary market', 'Hindi + English platform — built for all of India'].map(item => (
+                <div key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                  <Check size={14} className="text-teal-500 mt-0.5 flex-shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Form */}
-          {!submitted ? (
-            <form onSubmit={handleSubmit} className="max-w-2xl mx-auto mb-8">
-              {error ? (
-                <div className="mb-3 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  {error}
+          {/* Right — Waitlist form */}
+          <div className="lg:sticky lg:top-24">
+            {!submitted ? (
+              <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-base font-semibold text-gray-900">
+                    {lang==='en' ? 'Join the waitlist' : 'वेटलिस्ट में जुड़ें'}
+                  </h2>
+                  <span className="text-xs text-gray-400 flex items-center gap-1">
+                    <Users size={11} /> 847 joined
+                  </span>
                 </div>
-              ) : null}
+                <p className="text-xs text-gray-400 mb-5">
+                  {lang==='en'
+                    ? 'Get early access to Pune and Nagpur properties before public launch.'
+                    : 'पब्लिक लॉन्च से पहले पुणे और नागपुर प्रॉपर्टी का अर्ली एक्सेस पाएं।'}
+                </p>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-white px-4 py-3.5 rounded-md text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-blue)]"
-              />
-              <button
-                type="submit"
-                disabled={submitting}
-                className="bg-[var(--color-blue)] hover:bg-blue-600 text-white font-medium px-8 py-3.5 rounded-md transition-colors whitespace-nowrap flex items-center justify-center gap-2"
-              >
-                {submitting ? 'Joining...' : <>Join Waitlist <ChevronRight className="w-4 h-4" /></>}
-              </button>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      {lang==='en' ? 'Full name' : 'पूरा नाम'} *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder={lang==='en' ? 'Rahul Sharma' : 'राहुल शर्मा'}
+                      value={form.name}
+                      onChange={e => setForm({...form, name: e.target.value})}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-teal-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      {lang==='en' ? 'Email address' : 'ईमेल'} *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      placeholder="rahul@example.com"
+                      value={form.email}
+                      onChange={e => setForm({...form, email: e.target.value})}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-teal-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      {lang==='en' ? 'Mobile number' : 'मोबाइल नंबर'}
+                    </label>
+                    <input
+                      type="tel"
+                      placeholder="+91 98765 43210"
+                      value={form.phone}
+                      onChange={e => setForm({...form, phone: e.target.value})}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-teal-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 mb-1 block">
+                      {lang==='en' ? 'Your city' : 'आपका शहर'}
+                    </label>
+                    <select
+                      value={form.city}
+                      onChange={e => setForm({...form, city: e.target.value})}
+                      className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-teal-400 transition-colors bg-white text-gray-700"
+                    >
+                      <option value="">{lang==='en' ? 'Select city' : 'शहर चुनें'}</option>
+                      {['Pune','Nagpur','Mumbai','Delhi','Bengaluru','Hyderabad','Chennai','Ahmedabad','Surat','Other'].map(c => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-3 bg-teal-400 hover:bg-teal-600 disabled:bg-teal-200 text-white font-medium rounded-lg text-sm flex items-center justify-center gap-2 transition-colors"
+                  >
+                    {loading ? 'Joining...' : (
+                      <>{lang==='en' ? 'Get early access' : 'अर्ली एक्सेस पाएं'} <ArrowRight size={15} /></>
+                    )}
+                  </button>
+                </form>
+
+                <p className="text-xs text-gray-400 mt-3 text-center">
+                  {lang==='en' ? 'No spam. No commitment. Unsubscribe anytime.' : 'कोई स्पैम नहीं। कोई प्रतिबद्धता नहीं।'}
+                </p>
+
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <button
+                    onClick={() => navigate('/app/dashboard')}
+                    className="w-full text-center text-xs text-teal-600 hover:text-teal-700 font-medium"
+                  >
+                    {lang==='en' ? 'Or explore the live prototype →' : 'या लाइव प्रोटोटाइप देखें →'}
+                  </button>
+                </div>
               </div>
-            </form>
-          ) : (
-            <div className="bg-white/10 border border-white/10 rounded-xl p-8 max-w-3xl mx-auto shadow-xl mb-12 animate-in fade-in zoom-in duration-300">
-              <div className="text-center mb-8 border-b border-white/10 pb-8">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-400/20 text-green-400 mb-4">
-                  <CheckCircle className="w-6 h-6" />
+            ) : (
+              <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center">
+                <div className="w-12 h-12 bg-teal-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Check size={22} className="text-teal-500" />
                 </div>
-                <h3 className="text-2xl font-bold mb-2">You're on the list!</h3>
-                <p className="text-white font-bold text-lg">You are #248 on the waitlist. We will notify you when RealtyConnect launches.</p>
+                <h2 className="text-base font-semibold text-gray-900 mb-2">You're on the list</h2>
+                <p className="text-sm text-gray-500 mb-6">
+                  We'll notify you when {form.city || 'your city'}'s first SM-REIT property goes live. You're in the first 1,000.
+                </p>
+                <div className="bg-gray-50 rounded-xl p-4 mb-5 text-left">
+                  <p className="text-xs font-medium text-gray-700 mb-2">Move up the waitlist — share with 2 friends:</p>
+                  <div className="text-xs text-gray-500 bg-white border border-gray-100 rounded-lg p-3 select-all">
+                    Yaar, ek interesting startup mila — RealtyConnect. Commercial real estate mein ₹10L se invest kar sakte hain, SEBI regulated, 8-9% yield. FD se zyada. Waitlist join karo: realty-connect-startup2.vercel.app
+                  </div>
+                </div>
+                <button
+                  onClick={() => navigate('/app/dashboard')}
+                  className="w-full py-2.5 bg-teal-400 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  Explore the platform <ArrowRight size={14} />
+                </button>
               </div>
-
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <Gamepad2 className="w-6 h-6 text-gray-300" />
-                <h3 className="font-bold text-xl">Demo Investor Portal</h3>
-              </div>
-              <p className="text-center text-sm md:text-base text-white font-bold mb-8">While you wait, experience the SM-REIT investment platform simulation.</p>
-              
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="bg-[#152e55] rounded-lg p-4 text-center">
-                  <div className="text-green-400 font-bold text-lg md:text-xl mb-1">₹30L</div>
-                  <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-wider">Portfolio Value</div>
-                </div>
-                <div className="bg-[#152e55] rounded-lg p-4 text-center">
-                  <div className="text-green-400 font-bold text-lg md:text-xl mb-1">2</div>
-                  <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-wider">Properties</div>
-                </div>
-                <div className="bg-[#152e55] rounded-lg p-4 text-center">
-                  <div className="text-green-400 font-bold text-lg md:text-xl mb-1">8.4%</div>
-                  <div className="text-[10px] md:text-xs text-blue-200 uppercase tracking-wider">Avg Yield</div>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => navigate('/login')}
-                className="w-full bg-[var(--color-blue)] hover:bg-blue-600 text-white font-medium py-4 rounded-lg transition-colors text-base"
-              >
-                Enter Prototype Simulation
-              </button>
-            </div>
-          )}
-
-          {/* Trust Badges */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2 text-xs md:text-sm text-blue-50 transition-colors hover:bg-white/10">
-              <ShieldCheck className="w-4 h-4 mr-2 text-green-400" /> SEBI SM-REIT Regulated
-            </div>
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2 text-xs md:text-sm text-blue-50 transition-colors hover:bg-white/10">
-              <ShieldCheck className="w-4 h-4 mr-2 text-green-400" /> Pre-leased Properties Only
-            </div>
-            <div className="flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-2 text-xs md:text-sm text-blue-50 transition-colors hover:bg-white/10">
-              <ShieldCheck className="w-4 h-4 mr-2 text-green-400" /> AAA Tenants
-            </div>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-14">
-            <div className="bg-white/10 border border-white/10 rounded-xl p-6 text-center shadow-lg">
-              <div className="text-3xl font-bold text-green-400 mb-1">9–12%</div>
-              <div className="text-sm text-blue-100">net annual yield</div>
-            </div>
-            <div className="bg-white/10 border border-white/10 rounded-xl p-6 text-center shadow-lg">
-              <div className="text-3xl font-bold text-green-400 mb-1">Quarterly</div>
-              <div className="text-sm text-blue-100">income distribution</div>
-            </div>
-            <div className="bg-white/10 border border-white/10 rounded-xl p-6 text-center shadow-lg">
-              <div className="text-3xl font-bold text-green-400 mb-1">₹5.4T</div>
-              <div className="text-sm text-blue-100">Indian CRE market</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* Info Section */}
-      <div className="bg-gray-50 py-20 px-4">
-        <div className="max-w-5xl mx-auto mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12 text-[var(--color-navy)] font-serif">How it works</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <div className="text-5xl font-serif text-gray-200 mb-4">01</div>
-              <h3 className="font-bold text-[var(--color-navy)] text-lg mb-3">Find Pre-Leased Property</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                We find a pre-leased commercial property with a AAA tenant like TCS, Amazon, or HDFC Bank already paying rent.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <div className="text-5xl font-serif text-gray-200 mb-4">02</div>
-              <h3 className="font-bold text-[var(--color-navy)] text-lg mb-3">Invest via SM-REIT</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                RealtyConnect creates an SM-REIT scheme. You invest minimum ₹10 lakh and receive units. Funds go to SEBI-registered escrow.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <div className="text-5xl font-serif text-gray-200 mb-4">03</div>
-              <h3 className="font-bold text-[var(--color-navy)] text-lg mb-3">Earn Quarterly Income</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Tenant pays rent every month to the SPV. RealtyConnect distributes 90%+ to investors every quarter — directly to your bank.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-3xl mx-auto">
-          
-          {/* Trust Bar (simple text version) */}
-          <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-500 mb-16 font-medium">
-            <div className="flex items-center"><ShieldCheck className="w-5 h-5 mr-2 text-[var(--color-green)]" /> SEBI SM-REIT Regulated</div>
-            <div className="flex items-center"><Lock className="w-5 h-5 mr-2 text-[var(--color-green)]" /> Funds in Escrow</div>
-            <div className="flex items-center"><CheckCircle className="w-5 h-5 mr-2 text-[var(--color-green)]" /> CBRE Verified</div>
-          </div>
-
-          <h2 className="text-3xl font-bold text-center mb-10 text-[var(--color-navy)] font-serif">Frequently Asked Questions</h2>
-          
-          <div className="space-y-4">
-            <FAQItem 
-              question="What is the minimum investment?" 
-              answer="₹10,00,000 (₹10 lakh) as mandated by SEBI SM-REIT Regulations 2024. This applies to all investors — resident Indians, HNIs, and NRIs." 
-            />
-            <FAQItem 
-              question="Is my money safe if RealtyConnect shuts down?" 
-              answer="Yes. Your funds are held in a SEBI-registered escrow account controlled by an independent trustee — not by RealtyConnect. The property is owned by a separate SPV. Your units are in your demat account. Even if RealtyConnect closes, your ownership continues." 
-            />
-            <FAQItem 
-              question="Who are the tenants?" 
-              answer="We only work with AAA and AA-rated tenants — BSE/NSE-listed large companies like TCS, Infosys, HDFC Bank, Amazon India, D-Mart. These companies have 30+ year track records and cannot default without major legal consequences." 
-            />
-            <FAQItem 
-              question="How do I exit my investment?" 
-              answer="Two ways: (1) Sell your units on RealtyConnect's secondary market to another verified investor after the lock-in period. Settlement in 3–5 days. (2) Hold until the property is sold by the SPV (typically 5–7 years) and receive your share of capital appreciation." 
-            />
-            <FAQItem 
-              question="What returns can I expect?" 
-              answer="Net yield of 7–10% per year from rental income, paid quarterly. Plus capital appreciation of 6–8% per year on average when the property is sold. Combined XIRR of 13–16% over a 5-year hold." 
-            />
-            <FAQItem 
-              question="Is this better than an FD?" 
-              answer="SBI FD gives 6.8% per year, taxable, no capital gain. RealtyConnect targets 7–10% net yield plus 6–8% capital gain — with a physical Grade A building as the underlying asset. The risk is higher than an FD but significantly lower than stocks." 
-            />
+            )}
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Comparison Section */}
-      <div className="bg-gray-50 py-20 px-4 border-t border-gray-100">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-4 text-[var(--color-navy)] font-serif">SM REITs vs Regular REITs</h2>
-          <p className="text-center text-gray-900 font-semibold mb-12 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-            SM REITs have a focussed single asset investment model that generates risk-adjusted returns while allowing investors to choose cities and micro markets.
+      {/* Properties preview */}
+      <section className="bg-gray-50 py-16 px-6">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Live properties</p>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-8">
+            {lang==='en' ? 'Currently open for investment' : 'अभी निवेश के लिए खुला'}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {properties.map(p => (
+              <div key={p.name} className={`bg-white border border-gray-100 rounded-xl p-5 ${p.soon ? 'opacity-60' : ''}`}>
+                <div className="flex justify-between items-start mb-3">
+                  <p className="text-sm font-medium text-gray-900 leading-snug">{p.name}</p>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ml-2 whitespace-nowrap ${p.soon ? 'bg-amber-50 text-amber-700' : 'bg-teal-50 text-teal-700'}`}>
+                    {p.soon ? 'Aug 2026' : 'Open'}
+                  </span>
+                </div>
+                <div className="flex gap-4 mb-3">
+                  <div><p className="text-xs text-gray-400">Net yield</p><p className="text-lg font-semibold text-gray-900">{p.yield}</p></div>
+                  <div><p className="text-xs text-gray-400">Tenant</p><p className="text-lg font-semibold text-gray-900">{p.tenant}</p></div>
+                </div>
+                {!p.soon && (
+                  <div>
+                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-teal-400 rounded-full" style={{width:`${p.pct}%`}} />
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">{p.pct}% funded · {p.city}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust section */}
+      <section className="py-16 px-6 max-w-5xl mx-auto">
+        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Why trust us</p>
+        <h2 className="text-2xl font-semibold text-gray-900 mb-8">
+          {lang==='en' ? 'Built for investors who\'ve seen platforms fail' : 'उन निवेशकों के लिए बनाया जो प्लेटफॉर्म को फेल होते देख चुके हैं'}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {trust.map(({ icon: Icon, title, desc }) => (
+            <div key={title} className="border border-gray-100 rounded-xl p-5">
+              <div className="flex items-center gap-2 mb-2">
+                <Icon size={16} className="text-teal-500" />
+                <p className="text-sm font-medium text-gray-900">{title}</p>
+              </div>
+              <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="bg-gray-900 py-16 px-6 text-center">
+        <div className="max-w-xl mx-auto">
+          <h2 className="text-2xl font-semibold text-white mb-3">
+            {lang==='en' ? 'Stop letting your FD win' : 'अपने FD को जीतने देना बंद करें'}
+          </h2>
+          <p className="text-gray-400 text-sm mb-6">
+            {lang==='en'
+              ? '300 million Indians invest in FDs. Zero have access to commercial real estate. RealtyConnect changes that.'
+              : '30 करोड़ भारतीय FD में निवेश करते हैं। किसी के पास कमर्शियल रियल एस्टेट तक पहुंच नहीं। RealtyConnect यह बदलता है।'}
           </p>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm md:text-base min-w-[600px]">
-                <thead className="bg-white border-b border-gray-200">
-                  <tr>
-                    <th className="py-6 px-6 font-semibold text-gray-900 w-1/4">Investment Metric</th>
-                    <th className="py-6 px-6 font-bold text-[var(--color-navy)] w-3/8 text-center text-lg">SM REITs (Small & Medium)</th>
-                    <th className="py-6 px-6 font-bold text-gray-700 w-3/8 text-center text-lg">Regular REITs (Traditional)</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Capital Requirement</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">₹10 Lakhs (Minimum)</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">~₹300 - ₹1,500 (Price of 1 Unit)</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Asset Concentration</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">High. Usually focused on a single property or a small cluster.</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">Low. Diversified across multiple cities and sectors (Office, Retail, Industrial).</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Development Risk</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">Zero to Minimal. 95% of assets must be fully completed and rent-yielding.</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">Moderate. Up to 20% of the portfolio value can be in under-construction projects.</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Liquidity Level</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">Lower. Traded on exchanges, but smaller pool of buyers due to the ₹10L entry bar.</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">High. High trading volumes on NSE/BSE; easy to entry/exit daily.</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Yield Potential</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">Potentially higher, as you can pick high-growth specific micro-markets.</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">Stable and predictable, but capped by the performance of the entire portfolio.</td>
-                  </tr>
-                  <tr className="hover:bg-gray-50 transition-colors">
-                    <td className="py-6 px-6 font-bold text-gray-900">Management Fee</td>
-                    <td className="py-6 px-6 text-gray-800 text-center font-medium">Usually a percentage of the specific scheme's NAV.</td>
-                    <td className="py-6 px-6 text-gray-600 text-center">Integrated into the overall trust management structure.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <button
+            onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
+            className="px-6 py-3 bg-teal-400 hover:bg-teal-500 text-white font-medium rounded-lg text-sm transition-colors"
+          >
+            {lang==='en' ? 'Join the waitlist' : 'वेटलिस्ट में जुड़ें'}
+          </button>
         </div>
-      </div>
+      </section>
 
-      {/* Footer */}
-      <div className="bg-[#0f2344] text-white font-bold text-sm text-center py-6 px-4">
-        <p>RealtyConnect v0.1 Prototype | Minimum investment ₹10,00,000 (SEBI SM-REIT 2024) | Simulated data only | Not for real investment</p>
-      </div>
+      <footer className="border-t border-gray-100 py-6 px-6 text-xs text-gray-400 text-center bg-white">
+        RealtyConnect Pvt Ltd · SEBI SM-REIT Regulations 2024 · Minimum investment ₹10,00,000 · This is a prototype. No real money accepted.
+      </footer>
     </div>
-  );
-};
-
-export default Waitlist;
+  )
+}
