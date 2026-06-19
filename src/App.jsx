@@ -6,6 +6,7 @@ import Properties from './pages/Properties'
 import PropertyDetail from './pages/PropertyDetail'
 import Portfolio from './pages/Portfolio'
 import Secondary from './pages/Secondary'
+import Superadmin from './pages/Superadmin'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="properties/:id" element={<PropertyDetail />} />
         <Route path="portfolio" element={<Portfolio />} />
         <Route path="secondary" element={<Secondary />} />
+        <Route path="superadmin" element={<Superadmin />} />
       </Route>
     </Routes>
   )

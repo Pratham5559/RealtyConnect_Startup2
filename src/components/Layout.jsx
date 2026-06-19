@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, Building2, PieChart, ArrowLeftRight, ShieldCheck, Globe } from 'lucide-react'
+import { LayoutDashboard, Building2, PieChart, ArrowLeftRight, ShieldCheck, Crown } from 'lucide-react'
 import { useState } from 'react'
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { to: '/app/properties', icon: Building2, label: 'Properties' },
   { to: '/app/portfolio', icon: PieChart, label: 'Portfolio' },
   { to: '/app/secondary', icon: ArrowLeftRight, label: 'Market' },
+  { to: '/app/superadmin', icon: Crown, label: 'Superadmin' },
 ]
 
 export default function Layout() {
