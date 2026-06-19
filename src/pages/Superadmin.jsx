@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Lock, ShieldCheck, Users, IndianRupee, TrendingUp, Search, Mail, Phone } from 'lucide-react'
 import { INVESTORS, PROPERTIES } from '../data'
 
-const SUPERADMIN_EMAIL = 'iprathameshbadgujar@gmail.com'
+const SUPERADMIN_EMAIL_HASH = 'fa43e4ca5db6d2a24c76a0a6fa87761b084e29e024bad2799d8f317cd8521a38'
 
 function formatInr(value) {
   return new Intl.NumberFormat('en-IN', {
@@ -21,12 +21,19 @@ function propertyNames(holdings) {
     .join(', ')
 }
 
+async function sha256(value) {
+  const bytes = new TextEncoder().encode(value)
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  return [...new Uint8Array(digest)]
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('')
+}
+
 export default function Superadmin() {
-  const [email, setEmail] = useState(() => localStorage.getItem('rc_superadmin_email') || '')
-  const [draftEmail, setDraftEmail] = useState(email)
+  const [isAuthorized, setIsAuthorized] = useState(() => localStorage.getItem('rc_superadmin_unlocked') === 'true')
+  const [draftEmail, setDraftEmail] = useState('')
   const [query, setQuery] = useState('')
   const [error, setError] = useState('')
-  const isAuthorized = email.trim().toLowerCase() === SUPERADMIN_EMAIL
 
   const totals = useMemo(() => {
     return INVESTORS.reduce(
@@ -46,22 +53,24 @@ export default function Superadmin() {
       .some(value => value.toLowerCase().includes(search))
   })
 
-  function handleUnlock(e) {
+  async function handleUnlock(e) {
     e.preventDefault()
     const normalizedEmail = draftEmail.trim().toLowerCase()
-    if (normalizedEmail !== SUPERADMIN_EMAIL) {
+    const emailHash = await sha256(normalizedEmail)
+    if (emailHash !== SUPERADMIN_EMAIL_HASH) {
       setError('This email is not registered as the superadmin.')
       return
     }
 
-    localStorage.setItem('rc_superadmin_email', normalizedEmail)
-    setEmail(normalizedEmail)
+    localStorage.setItem('rc_superadmin_unlocked', 'true')
+    setIsAuthorized(true)
+    setDraftEmail('')
     setError('')
   }
 
   function handleSignOut() {
-    localStorage.removeItem('rc_superadmin_email')
-    setEmail('')
+    localStorage.removeItem('rc_superadmin_unlocked')
+    setIsAuthorized(false)
     setDraftEmail('')
   }
 
@@ -84,7 +93,7 @@ export default function Superadmin() {
               required
               value={draftEmail}
               onChange={e => setDraftEmail(e.target.value)}
-              placeholder={SUPERADMIN_EMAIL}
+              placeholder="Enter superadmin email"
               className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-teal-400 transition-colors"
             />
           </div>
@@ -109,7 +118,7 @@ export default function Superadmin() {
             Superadmin
           </div>
           <h1 className="text-2xl font-semibold text-gray-900">Investor control panel</h1>
-          <p className="text-sm text-gray-500 mt-1">Signed in as {SUPERADMIN_EMAIL}</p>
+          <p className="text-sm text-gray-500 mt-1">Signed in as superadmin</p>
         </div>
         <button
           onClick={handleSignOut}
